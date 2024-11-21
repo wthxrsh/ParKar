@@ -30,6 +30,55 @@
         #autocomplete-results div:hover {
             background: #f1f1f1;
         }
+    
+        a:hover {
+            text-decoration: underline;
+            color: grey;
+            text-underline-offset: 1rem;
+            text-decoration-color: rgb(181, 181, 181);
+        }
+    
+        .selected {
+            background-color: #f3f4f6;
+            color: white; /* Change text color for better contrast */
+        }
+    
+        #hourly-daily-btn, #monthly-btn {
+            background-color: #f3f4f6; /* Light grey background */
+            color: black; /* Default text color */
+        }
+
+        #submit-btn:hover{
+            background-color: #3f7bf4;/* Light grey background */
+            border: rgb(255, 255, 255) 0.1rem solid;
+        }
+        .relative {
+            display: flex;
+            align-items: center; /* Center items vertically */
+        }
+
+        #today-btn, 
+        #tomorrow-btn {
+            border: none; /* Remove the default border */
+            background-color: #4A5568; /* Dark background color */
+            color: white; /* Text color */
+            padding: 0.15rem 0.75rem; /* Adjust padding for buttons */
+            margin: 0 0.25rem; /* Add margin to create space around buttons */
+            transition: background-color 0.3s; /* Smooth transition for hover effect */
+            border-radius: 9999px; /* Capsule shape */
+            height: auto; /* Make buttons take full height of the container */
+        }
+
+        #today-btn:hover, 
+        #tomorrow-btn:hover {
+            background-color: #2D3748; /* Lighter background color on hover */
+        }
+
+        .button-container {
+            display: flex; /* Use flexbox for the button container */
+            align-items: center; /* Center buttons vertically */
+            height: 100%; /* Ensure it takes the full height of the parent */
+        }
     </style>
 </head>
 <body class="bg-white">
@@ -39,6 +88,7 @@
     </div>
     <nav class="flex space-x-6">
         <a class="text-black font-medium" href="#">About</a>
+        <a class="text-black font-medium" href="#">Sell Space</a>
         <a id="account-link" class="text-black font-medium" href="account.html">Login/Signup</a>
     </nav>
 </header>
@@ -60,14 +110,20 @@
         <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
         <div id="hourly-autocomplete-results" class="absolute bg-white border border-gray-300 z-10 max-h-48 overflow-y-auto w-full shadow-lg hidden"></div> <!-- Container for autocomplete results -->
     </div>
-    <!-- Date Picker -->
+   <!-- Date Picker with Buttons Inside -->
     <div class="mb-4">
         <label for="hourly-date-picker" class="block mb-2 font-medium">Date</label>
-        <input 
-            type="date" 
-            id="hourly-date-picker" 
-            class="w-full border border-gray-300 rounded py-2 px-4"
-        />
+        <div class="relative">
+            <input 
+                type="date" 
+                id="hourly-date-picker" 
+                class="w-full border border-gray-300 rounded-l py-2 px-4"
+            />
+            <div class="button-container absolute right-0 top-0 flex">
+                <button id="today-btn" class="bg-gray-800 text-white font-medium py-1 px-3 rounded-full hover:bg-gray-600">Today</button>
+                <button id="tomorrow-btn" class="bg-gray-800 text-white font-medium py-1 px-3 rounded-full hover:bg-gray-600">Tomorrow</button>
+            </div>
+        </div>
     </div>
     <!-- Start Time Picker -->
     <div class="mb-4">
@@ -117,7 +173,7 @@
                 </div>
             </div>
 
-            <button class="bg-blue-600 text-white font-medium py-2 px-4 rounded w-full">Find Parking Spots</button>
+            <button id="submit-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded w-full">Find Parking Spots</button>
         </div>
         <div class="hidden md:block">
             <img alt="Woman in a parking garage holding a phone" class="rounded-lg" height="300" src="https://storage.googleapis.com/a1aa/image/DDl2UScAWexNJCig7rm4e3MOTizAIc51F4eDRzXs4CK7PUmnA.jpg" width="500"/>
@@ -221,22 +277,36 @@ document.addEventListener('click', (e) => {
     document.getElementById('hourly-daily-btn').addEventListener('click', () => {
         document.getElementById('hourly-daily-options').classList.remove('hidden');
         document.getElementById('monthly-options').classList.add('hidden');
+        
+        // Set the selected class
+        document.getElementById('hourly-daily-btn').classList.add('selected');
+        document.getElementById('monthly-btn').classList.remove('selected');
     });
 
     document.getElementById('monthly-btn').addEventListener('click', () => {
         document.getElementById('monthly-options').classList.remove('hidden');
         document.getElementById('hourly-daily-options').classList.add('hidden');
-    });
-</script>
-<script>
-    document.getElementById('hourly-daily-btn').addEventListener('click', () => {
-        document.getElementById('hourly-daily-options').classList.remove('hidden');
-        document.getElementById('monthly-options').classList.add('hidden');
+        
+        // Set the selected class
+        document.getElementById('monthly-btn').classList.add('selected');
+        document.getElementById('hourly-daily-btn').classList.remove('selected');
     });
 
-    document.getElementById('monthly-btn').addEventListener('click', () => {
-        document.getElementById('monthly-options').classList.remove('hidden');
-        document.getElementById('hourly-daily-options').classList.add('hidden');
+        // Get the date picker input and buttons
+    const datePickerInput = document.getElementById('hourly-date-picker');
+    const todayBtn = document.getElementById('today-btn');
+    const tomorrowBtn = document.getElementById('tomorrow-btn');
+
+    // Add event listeners to the buttons
+    todayBtn.addEventListener('click', () => {
+        const today = new Date();
+        datePickerInput.value = today.toISOString().split('T')[0]; // Set the date to today in YYYY-MM-DD format
+    });
+
+    tomorrowBtn.addEventListener('click', () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1); // Increment the date by 1 day
+        datePickerInput.value = tomorrow.toISOString().split('T')[0]; // Set the date to tomorrow in YYYY-MM-DD format
     });
 </script>
 
