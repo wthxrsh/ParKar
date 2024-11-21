@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Signup with Firebase</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script type="module">
+        // Import required Firebase functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC72IaKW_9HPGY5ClP0o1WCmwdstooPeg0",
+            authDomain: "parkar-448b3.firebaseapp.com",
+            projectId: "parkar-448b3",
+            storageBucket: "parkar-448b3.appspot.com",
+            messagingSenderId: "323068255491",
+            appId: "1:323068255491:web:6e04e08b3a96b211581d36",
+            measurementId: "G-YJV0N8GJND"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Handle login
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('login-btn').addEventListener('click', async () => {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const messageDiv = document.getElementById('message');
+
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    messageDiv.innerText = 'Login successful!';
+                    messageDiv.classList.remove('text-red-500');
+                    messageDiv.classList.add('text-green-500');
+                    window.location.href = "index.html"; // Adjust the path if needed
+                } catch (error) {
+                    messageDiv.innerText = error.message;
+                    messageDiv.classList.remove('text-green-500');
+                    messageDiv.classList.add('text-red-500');
+                }
+            });
+
+            // Handle signup
+            document.getElementById('signup-btn').addEventListener('click', async () => {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const messageDiv = document.getElementById('message');
+
+                try {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    messageDiv.innerText = 'Signup successful! You can now log in.';
+                    messageDiv.classList.remove('text-red-500');
+                    messageDiv.classList.add('text-green-500');
+                } catch (error) {
+                    messageDiv.innerText = error.message;
+                    messageDiv.classList.remove('text-green-500');
+                    messageDiv.classList.add('text-red-500');
+                }
+            });
+        });
+    </script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+
+<div class="bg-white p-6 rounded shadow-lg w-96">
+    <h2 class="text-xl font-bold mb-4 text-center">Login / Signup</h2>
+    
+    <input type="email" id="email" placeholder="Email" required class="border border-gray-300 p-2 w-full mb-2 rounded" />
+    <input type="password" id="password" placeholder="Password" required class="border border-gray-300 p-2 w-full mb-4 rounded" />
+    
+    <button id="login-btn" class="bg-green-500 text-white py-2 px-4 rounded w-full hover:bg-green-600">Login</button>
+    <button id="signup-btn" class="bg-blue-500 text-white py-2 px-4 rounded w-full hover:bg-blue-600">Signup</button>
+    
+    <div id="message" class="mt-2 text-center"></div>
+</div>
+
+</body>
+</html>
