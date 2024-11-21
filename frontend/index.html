@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<!-- Firebase Auth -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -30,16 +31,67 @@
         #autocomplete-results div:hover {
             background: #f1f1f1;
         }
+    
+        a:hover {
+            text-decoration: underline;
+            color: grey;
+            text-underline-offset: 1rem;
+            text-decoration-color: rgb(181, 181, 181);
+        }
+    
+        .selected {
+            background-color: #f3f4f6;
+            color: white; /* Change text color for better contrast */
+        }
+    
+        #hourly-daily-btn, #monthly-btn {
+            background-color: #f3f4f6; /* Light grey background */
+            color: black; /* Default text color */
+        }
+
+        #submit-btn:hover{
+            background-color: #3f7bf4;/* Light grey background */
+            border: rgb(255, 255, 255) 0.1rem solid;
+        }
+        .relative {
+            display: flex;
+            align-items: center; /* Center items vertically */
+        }
+
+        #today-btn, 
+        #tomorrow-btn {
+            border: none; /* Remove the default border */
+            background-color: #4A5568; /* Dark background color */
+            color: white; /* Text color */
+            padding: 0.15rem 0.75rem; /* Adjust padding for buttons */
+            margin: 0 0.25rem; /* Add margin to create space around buttons */
+            transition: background-color 0.3s; /* Smooth transition for hover effect */
+            border-radius: 9999px; /* Capsule shape */
+            height: auto; /* Make buttons take full height of the container */
+        }
+
+        #today-btn:hover, 
+        #tomorrow-btn:hover {
+            background-color: #2D3748; /* Lighter background color on hover */
+        }
+
+        .button-container {
+            display: flex; /* Use flexbox for the button container */
+            align-items: center; /* Center buttons vertically */
+            height: 100%; /* Ensure it takes the full height of the parent */
+        }
     </style>
 </head>
 <body class="bg-white">
 <header class="flex justify-between items-center p-6">
     <div class="flex items-center">
-        <img alt="parkar Logo" class="h-8" height="50" src="assets/logo.png" width="100"/>
+        <a href="index.html"><img alt="parkar Logo" class="h-8" height="50" src="assets/logo.png" width="100"/></a>
     </div>
     <nav class="flex space-x-6">
         <a class="text-black font-medium" href="#">About</a>
+        <a class="text-black font-medium" href="#">Rent Space</a>
         <a id="account-link" class="text-black font-medium" href="account.html">Login/Signup</a>
+        <button id="logout-btn" class="hidden text-black font-medium ml-4">Sign Out</button>
     </nav>
 </header>
 <main class="flex justify-center items-center h-screen px-4">
@@ -60,14 +112,20 @@
         <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
         <div id="hourly-autocomplete-results" class="absolute bg-white border border-gray-300 z-10 max-h-48 overflow-y-auto w-full shadow-lg hidden"></div> <!-- Container for autocomplete results -->
     </div>
-    <!-- Date Picker -->
+   <!-- Date Picker with Buttons Inside -->
     <div class="mb-4">
         <label for="hourly-date-picker" class="block mb-2 font-medium">Date</label>
-        <input 
-            type="date" 
-            id="hourly-date-picker" 
-            class="w-full border border-gray-300 rounded py-2 px-4"
-        />
+        <div class="relative">
+            <input 
+                type="date" 
+                id="hourly-date-picker" 
+                class="w-full border border-gray-300 rounded-l py-2 px-4"
+            />
+            <div class="button-container absolute right-0 top-0 flex">
+                <button id="today-btn" class="bg-gray-800 text-white font-medium py-1 px-3 rounded-full hover:bg-gray-600">Today</button>
+                <button id="tomorrow-btn" class="bg-gray-800 text-white font-medium py-1 px-3 rounded-full hover:bg-gray-600">Tomorrow</button>
+            </div>
+        </div>
     </div>
     <!-- Start Time Picker -->
     <div class="mb-4">
@@ -117,7 +175,7 @@
                 </div>
             </div>
 
-            <button class="bg-blue-600 text-white font-medium py-2 px-4 rounded w-full">Find Parking Spots</button>
+            <button id="submit-btn" class="bg-blue-600 text-white font-medium py-2 px-4 rounded w-full">Find Parking Spots</button>
         </div>
         <div class="hidden md:block">
             <img alt="Woman in a parking garage holding a phone" class="rounded-lg" height="300" src="https://storage.googleapis.com/a1aa/image/DDl2UScAWexNJCig7rm4e3MOTizAIc51F4eDRzXs4CK7PUmnA.jpg" width="500"/>
@@ -129,6 +187,8 @@
 
 
 <!------------------------JAVASCRIPT----------------------------->
+
+
 <script>
     const apiKey = 'pk.4aa50b3509eb35021789f305ebcd4f37'; // Replace with your actual LocationIQ API key
 
@@ -221,56 +281,94 @@ document.addEventListener('click', (e) => {
     document.getElementById('hourly-daily-btn').addEventListener('click', () => {
         document.getElementById('hourly-daily-options').classList.remove('hidden');
         document.getElementById('monthly-options').classList.add('hidden');
+        
+        // Set the selected class
+        document.getElementById('hourly-daily-btn').classList.add('selected');
+        document.getElementById('monthly-btn').classList.remove('selected');
     });
 
     document.getElementById('monthly-btn').addEventListener('click', () => {
         document.getElementById('monthly-options').classList.remove('hidden');
         document.getElementById('hourly-daily-options').classList.add('hidden');
-    });
-</script>
-<script>
-    document.getElementById('hourly-daily-btn').addEventListener('click', () => {
-        document.getElementById('hourly-daily-options').classList.remove('hidden');
-        document.getElementById('monthly-options').classList.add('hidden');
+        
+        // Set the selected class
+        document.getElementById('monthly-btn').classList.add('selected');
+        document.getElementById('hourly-daily-btn').classList.remove('selected');
     });
 
-    document.getElementById('monthly-btn').addEventListener('click', () => {
-        document.getElementById('monthly-options').classList.remove('hidden');
-        document.getElementById('hourly-daily-options').classList.add('hidden');
+        // Get the date picker input and buttons
+    const datePickerInput = document.getElementById('hourly-date-picker');
+    const todayBtn = document.getElementById('today-btn');
+    const tomorrowBtn = document.getElementById('tomorrow-btn');
+
+    // Add event listeners to the buttons
+    todayBtn.addEventListener('click', () => {
+        const today = new Date();
+        datePickerInput.value = today.toISOString().split('T')[0]; // Set the date to today in YYYY-MM-DD format
     });
-</script>
 
-<script>
-    // Assume you have a function to check if the user is logged in
-function isLoggedIn() {
-    const loggedIn = auth.currentUser  !== null;
-    console.log("User  logged in:", loggedIn); 
-  return auth.currentUser !== null;
-}
+    tomorrowBtn.addEventListener('click', () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1); // Increment the date by 1 day
+        datePickerInput.value = tomorrow.toISOString().split('T')[0]; // Set the date to tomorrow in YYYY-MM-DD format
+    });
 
-// Update the link text based on the login status
-function updateAccountLink() {
-  const accountLink = document.getElementById('account-link');
-  if (isLoggedIn()) {
-    accountLink.textContent = 'My Account';
-    accountLink.href = '#'; // Update the link URL if needed
-  } else {
-    accountLink.textContent = 'Login/Signup';
-    accountLink.href = 'account.html'; // Update the link URL if needed
-  }
-}
+    //DATABASE-------------------------------------------------------
 
-// Call the update function when the page loads or when the user logs in/out
-updateAccountLink();
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 
-// Add an event listener to update the link when the user logs in/out
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    updateAccountLink();
-  } else {
-    updateAccountLink();
-  }
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC72IaKW_9HPGY5ClP0o1WCmwdstooPeg0",
+  authDomain: "parkar-448b3.firebaseapp.com",
+  databaseURL: "https://parkar-448b3-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "parkar-448b3",
+  storageBucket: "parkar-448b3.firebasestorage.app",
+  messagingSenderId: "323068255491",
+  appId: "1:323068255491:web:6e04e08b3a96b211581d36",
+  measurementId: "G-YJV0N8GJND"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+const auth = getAuth(app);
+
+// DOM Elements
+const accountLink = document.getElementById("account-link");
+const logoutBtn = document.getElementById("logout-btn");
+
+// Update navigation based on authentication state
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        accountLink.textContent = "Account";
+        accountLink.href = "account.html";
+        logoutBtn.classList.remove("hidden");
+    } else {
+        accountLink.textContent = "Login/Signup";
+        accountLink.href = "login.html";
+        logoutBtn.classList.add("hidden");
+    }
 });
+
+logoutBtn.addEventListener("click", async () => {
+    try {
+        await signOut(auth);
+        console.log("User signed out");
+    } catch (error) {
+        console.error("Error signing out: ", error);
+    }
+});
+
+
 </script>
 
 </body>
