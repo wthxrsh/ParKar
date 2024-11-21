@@ -89,10 +89,7 @@
     </div>
     <nav class="flex space-x-6">
         <a class="text-black font-medium" href="#">About</a>
-<<<<<<< HEAD
         <a class="text-black font-medium" href="#">Rent Space</a>
-=======
->>>>>>> 3a5b969650e296becc8b46477926478c89a75494
         <a id="account-link" class="text-black font-medium" href="account.html">Login/Signup</a>
         <button id="logout-btn" class="hidden text-black font-medium ml-4">Sign Out</button>
     </nav>
@@ -308,6 +305,7 @@ document.addEventListener('click', (e) => {
     todayBtn.addEventListener('click', () => {
         const today = new Date();
         datePickerInput.value = today.toISOString().split('T')[0]; // Set the date to today in YYYY-MM-DD format
+    });
 
 
     tomorrowBtn.addEventListener('click', () => {
