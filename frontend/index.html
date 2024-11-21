@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>ParKar</title>
@@ -37,7 +39,7 @@
     </div>
     <nav class="flex space-x-6">
         <a class="text-black font-medium" href="#">About</a>
-        <a class="text-black font-medium" href="#"><i class="fas fa-user-circle"></i> My Account</a>
+        <a id="account-link" class="text-black font-medium" href="account.html">Login/Signup</a>
     </nav>
 </header>
 <main class="flex justify-center items-center h-screen px-4">
@@ -122,6 +124,11 @@
         </div>
     </div>
 </main>
+
+<!----------------------login signup-------------------->
+
+
+<!------------------------JAVASCRIPT----------------------------->
 <script>
     const apiKey = 'pk.4aa50b3509eb35021789f305ebcd4f37'; // Replace with your actual LocationIQ API key
 
@@ -232,5 +239,39 @@ document.addEventListener('click', (e) => {
         document.getElementById('hourly-daily-options').classList.add('hidden');
     });
 </script>
+
+<script>
+    // Assume you have a function to check if the user is logged in
+function isLoggedIn() {
+    const loggedIn = auth.currentUser  !== null;
+    console.log("User  logged in:", loggedIn); 
+  return auth.currentUser !== null;
+}
+
+// Update the link text based on the login status
+function updateAccountLink() {
+  const accountLink = document.getElementById('account-link');
+  if (isLoggedIn()) {
+    accountLink.textContent = 'My Account';
+    accountLink.href = '#'; // Update the link URL if needed
+  } else {
+    accountLink.textContent = 'Login/Signup';
+    accountLink.href = 'account.html'; // Update the link URL if needed
+  }
+}
+
+// Call the update function when the page loads or when the user logs in/out
+updateAccountLink();
+
+// Add an event listener to update the link when the user logs in/out
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    updateAccountLink();
+  } else {
+    updateAccountLink();
+  }
+});
+</script>
+
 </body>
 </html>
