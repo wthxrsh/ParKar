@@ -91,6 +91,33 @@ function geocodeAddress(geocoder, address) {
 }
 
   </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenCage Autocomplete</title>
+  <style>
+      #suggestions {
+          list-style-type: none;
+          padding: 0;
+          margin: 0;
+          border: 1px solid #ddd;
+          max-height: 200px;
+          width: 370px;
+          overflow-y: scroll;
+          position: absolute;
+          background-color: white;
+      }
+      #suggestions li {
+          padding: 8px;
+          cursor: pointer;
+      }
+      #suggestions li:hover {
+          background-color: #f0f0f0;
+      }
+      #btn-1:hover{
+        background-color: black;
+        color: white;
+      }
+  </style>
 
  </head>
  <body class="bg-gradient-to-r from-gray-100 to-white">
@@ -135,13 +162,59 @@ function geocodeAddress(geocoder, address) {
      <div id="hourly-daily-options">
       <div class="mb-4">
        <input id="location-input" class="w-full px-4 py-2 border rounded-md" placeholder="Where are you going?" type="text"/>
+        <ul id="suggestions"></ul>
+       <script>
+        const apiKey = 'e104f9ea3de14f26bc7ee1a3c98a2a78'; // Replace with your OpenCage API Key
+        const inputField = document.getElementById('location-input');
+        const suggestionsList = document.getElementById('suggestions');
+
+        // Function to fetch autocomplete results from OpenCage API
+        async function fetchAutocomplete(query) {
+            if (query.length < 3) { // Minimum 3 characters to trigger search
+                suggestionsList.innerHTML = '';
+                return;
+            }
+
+            const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(query)}&key=${apiKey}&limit=5`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                // Clear previous suggestions
+                suggestionsList.innerHTML = '';
+
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(result => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = result.formatted;
+                        listItem.addEventListener('click', () => {
+                            inputField.value = result.formatted; // Set input field value to selected suggestion
+                            suggestionsList.innerHTML = ''; // Clear suggestions
+                        });
+                        suggestionsList.appendChild(listItem);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching autocomplete results:', error);
+            }
+        }
+
+        // Event listener for input changes
+        inputField.addEventListener('input', (event) => {
+            const query = event.target.value;
+            fetchAutocomplete(query);
+        });
+    </script>
+
+
       </div>
       <div class="mb-4 flex items-center space-x-2">
        <input class="w-full px-4 py-2 border rounded-md" id="date-input" type="date"/>
-       <button class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setToday('date-input')">
+       <button id="btn-1" class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setToday('date-input')">
         Today
        </button>
-       <button class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setTomorrow('date-input')">
+       <button id="btn-1" class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setTomorrow('date-input')">
         Tomorrow
        </button>
       </div>
@@ -159,19 +232,19 @@ function geocodeAddress(geocoder, address) {
       </div>
       <div class="mb-4 flex items-center space-x-2">
        <input class="w-full px-4 py-2 border rounded-md" id="start-date-input" type="date"/>
-       <button class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setToday('start-date-input')">
+       <button id="btn-1" class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setToday('start-date-input')">
         Today
        </button>
-       <button class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setTomorrow('start-date-input')">
+       <button id="btn-1" class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setTomorrow('start-date-input')">
         Tomorrow
        </button>
       </div>
       <div class="mb-4 flex items-center space-x-2">
        <input class="w-full px-4 py-2 border rounded-md" id="end-date-input" type="date"/>
-       <button class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setToday('end-date-input')">
+       <button id="btn-1" class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setToday('end-date-input')">
         Today
        </button>
-       <button class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setTomorrow('end-date-input')">
+       <button id="btn-1" class="px-4 py-2 bg-gray-200 text-black rounded-md" onclick="setTomorrow('end-date-input')">
         Tomorrow
        </button>
       </div>
