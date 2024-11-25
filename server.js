@@ -42,6 +42,10 @@ app1.get('/renting', (req, res) => {
     res.render('renting'); // Ensure this is the Express response object
 });
 
+app1.get('/account', (req,res)=>{
+  res.render('myaccount');
+})
+
 app1.post('/signup', async (req, res) => {
   const { email, password } = req.body;
   const auth = getAuth();
@@ -77,6 +81,8 @@ app1.post('/login', async (req, res) => {
     res.status(400).json({ message: `Login failed: ${error.message}` });
   }
 });
+
+
 
 // Start server
 const PORT = 8000;
