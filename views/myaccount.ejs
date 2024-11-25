@@ -1,0 +1,307 @@
+<html>
+ <head>
+  <title>
+   My Account
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <script>
+   function showEmailForm() {
+    document.getElementById('email-display').style.display = 'none';
+    document.getElementById('email-form').style.display = 'block';
+   }
+   function showPasswordForm() {
+    document.getElementById('password-display').style.display = 'none';
+    document.getElementById('password-form').style.display = 'block';
+   }
+   function saveEmail() {
+    var newEmail = document.getElementById('new-email').value;
+    document.getElementById('email-text').innerText = newEmail;
+    document.getElementById('email-display').style.display = 'block';
+    document.getElementById('email-form').style.display = 'none';
+   }
+   function savePassword() {
+    var newPassword = document.getElementById('new-password').value;
+    document.getElementById('password-text').innerText = '**********';
+    document.getElementById('password-display').style.display = 'block';
+    document.getElementById('password-form').style.display = 'none';
+   }
+   function removeVehicle(element) {
+    element.parentElement.parentElement.remove();
+    checkVehicleList();
+   }
+   function showAddVehicleForm() {
+    document.getElementById('add-vehicle-form').style.display = 'block';
+   }
+   function addVehicle() {
+    var vehicleModel = document.getElementById('vehicle-model').value;
+    var vehicleNumber = document.getElementById('vehicle-number').value;
+    var vehicleDetails = vehicleModel + ' (' + vehicleNumber + ')';
+    var vehicleList = document.getElementById('vehicle-list');
+    var newVehicle = document.createElement('div');
+    newVehicle.className = 'flex justify-between items-center mb-2';
+    newVehicle.innerHTML = `
+      <span>${vehicleDetails}</span>
+      <div>
+        <a class="text-green-800 mr-2" href="javascript:void(0);" onclick="setAsDefault(this)">Set as default</a>
+        <a class="text-green-800" href="javascript:void(0);" onclick="removeVehicle(this)">Remove</a>
+      </div>
+    `;
+    vehicleList.appendChild(newVehicle);
+    document.getElementById('add-vehicle-form').style.display = 'none';
+    checkVehicleList();
+   }
+   function setAsDefault(element) {
+    var vehicleList = document.getElementById('vehicle-list').children;
+    for (var i = 0; i < vehicleList.length; i++) {
+      vehicleList[i].classList.remove('font-bold');
+    }
+    element.parentElement.parentElement.classList.add('font-bold');
+   }
+   function checkVehicleList() {
+    var vehicleList = document.getElementById('vehicle-list');
+    var noVehiclesText = document.getElementById('no-vehicles-text');
+    if (vehicleList.children.length === 0) {
+      noVehiclesText.style.display = 'block';
+    } else {
+      noVehiclesText.style.display = 'none';
+    }
+   }
+   function showAddCreditCardForm() {
+    document.getElementById('add-credit-card-form').style.display = 'block';
+   }
+   function addCreditCard() {
+    var cardNumber = document.getElementById('card-number').value;
+    var cardExpiry = document.getElementById('card-expiry').value;
+    var cardDetails = '**** **** **** ' + cardNumber.slice(-4) + ' (Exp: ' + cardExpiry + ')';
+    var creditCardList = document.getElementById('credit-card-list');
+    var newCard = document.createElement('div');
+    newCard.className = 'flex justify-between items-center mb-2';
+    newCard.innerHTML = `
+      <span>${cardDetails}</span>
+      <div>
+        <a class="text-green-800" href="javascript:void(0);" onclick="removeCreditCard(this)">Remove</a>
+      </div>
+    `;
+    creditCardList.appendChild(newCard);
+    document.getElementById('add-credit-card-form').style.display = 'none';
+    checkCreditCardList();
+   }
+   function removeCreditCard(element) {
+    element.parentElement.parentElement.remove();
+    checkCreditCardList();
+   }
+   function checkCreditCardList() {
+    var creditCardList = document.getElementById('credit-card-list');
+    var noCreditCardsText = document.getElementById('no-credit-cards-text');
+    if (creditCardList.children.length === 0) {
+      noCreditCardsText.style.display = 'block';
+    } else {
+      noCreditCardsText.style.display = 'none';
+    }
+   }
+   function showSettings() {
+    document.getElementById('settings-section').style.display = 'block';
+    document.getElementById('reservations-section').style.display = 'none';
+    document.getElementById('settings-tab').classList.add('border-green-800', 'text-green-800', 'border-b-4');
+    document.getElementById('settings-tab').classList.remove('text-gray-600');
+    document.getElementById('reservations-tab').classList.remove('border-green-800', 'text-green-800', 'border-b-4');
+    document.getElementById('reservations-tab').classList.add('text-gray-600');
+   }
+   function showReservations() {
+    document.getElementById('settings-section').style.display = 'none';
+    document.getElementById('reservations-section').style.display = 'block';
+    document.getElementById('reservations-tab').classList.add('border-green-800', 'text-green-800', 'border-b-4');
+    document.getElementById('reservations-tab').classList.remove('text-gray-600');
+    document.getElementById('settings-tab').classList.remove('border-green-800', 'text-green-800', 'border-b-4');
+    document.getElementById('settings-tab').classList.add('text-gray-600');
+   }
+   window.onload = function() {
+    checkVehicleList();
+    checkCreditCardList();
+   };
+  </script>
+ </head>
+ <body class="bg-gray-100">
+  <div class="bg-green-400 p-4">
+   <div class="container mx-auto flex justify-between items-center">
+    <div class="text-white text-2xl font-bold">
+     <img class="max-h-8" src="../public/images/Park.png" alt="">
+    </div>
+    <a class="text-white" href="/">
+     Return to Home
+    </a>
+   </div>
+  </div>
+  <div class="container mx-auto mt-4 px-4 md:px-0">
+   <div class="text-sm text-gray-600 mb-2">
+    <a class="text-green-800" href="#">
+     Home
+    </a>
+    &gt;
+    <span>
+     My Account
+    </span>
+   </div>
+   <h1 class="text-2xl font-bold mb-4">
+    MY ACCOUNT
+   </h1>
+   <div class="flex border-b-2 border-gray-200 mb-4">
+    <a id="settings-tab" class="text-green-800 border-b-4 border-green-800 px-4 py-2 cursor-pointer" onclick="showSettings()">
+     Settings
+    </a>
+    <a id="reservations-tab" class="text-gray-600 px-4 py-2 cursor-pointer" onclick="showReservations()">
+     Reservations
+    </a>
+   </div>
+   <div id="settings-section">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+     <div class="bg-white p-4 shadow rounded h-full">
+      <h2 class="font-bold mb-2">
+       SIGN-IN SETTINGS
+      </h2>
+      <div class="mb-2">
+       <label class="block text-gray-600">
+        Username/Email
+       </label>
+       <div id="email-display" class="flex justify-between items-center">
+        <span id="email-text">
+         wthxrsh@gmail.com
+        </span>
+        <a class="text-green-800" href="javascript:void(0);" onclick="showEmailForm()">
+         Change
+        </a>
+       </div>
+       <div id="email-form" class="hidden">
+        <input class="border p-2 w-full mb-2" id="new-email" placeholder="Enter new email" type="email"/>
+        <button class="bg-green-400 text-white px-4 py-2 rounded" onclick="saveEmail()">
+         Save
+        </button>
+       </div>
+      </div>
+      <div>
+       <label class="block text-gray-600">
+        Password
+       </label>
+       <div id="password-display" class="flex justify-between items-center">
+        <span id="password-text">
+         **********
+        </span>
+        <a class="text-green-800" href="javascript:void(0);" onclick="showPasswordForm()">
+         Change
+        </a>
+       </div>
+       <div id="password-form" class="hidden">
+        <input class="border p-2 w-full mb-2" id="new-password" placeholder="Enter new password" type="password"/>
+        <button class="bg-green-400 text-white px-4 py-2 rounded" onclick="savePassword()">
+         Save
+        </button>
+       </div>
+      </div>
+     </div>
+     <div class="bg-white p-4 shadow rounded h-full">
+      <h2 class="font-bold mb-2">
+       FAVORITE SPOTS
+      </h2>
+      <div id="favorite-spots-list" class="mt-2">
+       <ul class="list-disc pl-5">
+        <li>
+         Spot 1
+        </li>
+        <li>
+         Spot 2
+        </li>
+        <li>
+         Spot 3
+        </li>
+        <li>
+         Spot 4
+        </li>
+       </ul>
+      </div>
+     </div>
+     <div class="bg-white p-4 shadow rounded h-full">
+      <h2 class="font-bold mb-2">
+       VEHICLE DETAILS
+      </h2>
+      <div id="vehicle-list">
+       <p id="no-vehicles-text" class="text-gray-600">
+        No vehicles added yet.
+       </p>
+      </div>
+      <a class="text-green-800" href="javascript:void(0);" onclick="showAddVehicleForm()">
+       Add a Vehicle
+      </a>
+      <div id="add-vehicle-form" class="hidden mt-4">
+       <input class="border p-2 w-full mb-2" id="vehicle-model" placeholder="Enter vehicle model" type="text"/>
+       <input class="border p-2 w-full mb-2" id="vehicle-number" placeholder="Enter vehicle number" type="text"/>
+       <button class="bg-green-400 text-white px-4 py-2 rounded" onclick="addVehicle()">
+        Add Vehicle
+       </button>
+      </div>
+     </div>
+     <div class="bg-white p-4 shadow rounded h-full">
+      <h2 class="font-bold mb-2">
+       PAYMENT TYPES
+      </h2>
+      <div id="credit-card-list">
+       <p id="no-credit-cards-text" class="text-gray-600">
+        No saved credit cards.
+       </p>
+      </div>
+      <a class="text-green-800" href="javascript:void(0);" onclick="showAddCreditCardForm()">
+       Add a Credit Card
+      </a>
+      <div id="add-credit-card-form" class="hidden mt-4">
+       <input class="border p-2 w-full mb-2" id="card-number" placeholder="Enter card number" type="text"/>
+       <input class="border p-2 w-full mb-2" id="card-expiry" placeholder="Enter expiry date (MM/YY)" type="text"/>
+       <button class="bg-green-400 text-white px-4 py-2 rounded" onclick="addCreditCard()">
+        Add Credit Card
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div id="reservations-section" class="hidden">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+     <div class="bg-white p-4 shadow rounded h-full">
+      <h2 class="font-bold mb-2">
+       CURRENT RESERVATIONS
+      </h2>
+      <div id="current-reservations-list" class="mt-2">
+       <ul class="list-disc pl-5">
+        <li>
+         Reservation 1
+        </li>
+        <li>
+         Reservation 2
+        </li>
+       </ul>
+      </div>
+     </div>
+     <div class="bg-white p-4 shadow rounded h-full">
+      <h2 class="font-bold mb-2">
+       PREVIOUS RESERVATIONS
+      </h2>
+      <div id="previous-reservations-list" class="mt-2">
+       <ul class="list-disc pl-5">
+        <li>
+         Reservation 1
+        </li>
+        <li>
+         Reservation 2
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="text-right mt-4">
+    <a class="text-green-800" href="#">
+     Sign Out
+    </a>
+   </div>
+  </div>
+ </body>
+</html>
